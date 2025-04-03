@@ -128,16 +128,16 @@ class BaseGraphRAG(Generic[GTEmbedding, GTHash, GTChunk, GTNode, GTEdge, GTId]):
             await self.state_manager.upsert(
                 llm=self.llm_service, subgraphs=subgraphs, documents=new_chunks_per_data, show_progress=show_progress
             )
-
-            # Commit the changes if all is successful
-            await self.state_manager.insert_done()
-
-            # Return the total number of entities, relationships, and chunks
-            return (
+            r = (
                 await self.state_manager.get_num_entities(),
                 await self.state_manager.get_num_relations(),
                 await self.state_manager.get_num_chunks(),
             )
+            # Commit the changes if all is successful
+            await self.state_manager.insert_done()
+
+            # Return the total number of entities, relationships, and chunks
+            return r
         except Exception as e:
             logger.error(f"Error during insertion: {e}")
             raise e
