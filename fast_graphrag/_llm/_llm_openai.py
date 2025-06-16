@@ -36,6 +36,7 @@ class OpenAILLMService(BaseLLMService):
   mode: instructor.Mode = field(default=instructor.Mode.JSON)
   client: Literal["openai", "azure"] = field(default="openai")
   api_version: Optional[str] = field(default=None)
+  azure_deployment: Optional[str] = None
 
   def __post_init__(self):
     self.encoding = None
@@ -65,6 +66,7 @@ class OpenAILLMService(BaseLLMService):
           api_key=self.api_key,
           api_version=self.api_version,
           timeout=TIMEOUT_SECONDS,
+          azure_deployment=self.azure_deployment
         ),
         mode=self.mode,
       )
